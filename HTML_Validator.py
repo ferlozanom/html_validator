@@ -10,7 +10,25 @@ def validate_html(html):
     >>> validate_html('<strong>example')
     False
     '''
-
+    s = []
+    balanced = True
+    
+    for tags in _extract_tags(html):
+        if '/' not in tags:
+            s.append(tags)
+        else:
+            if s == []:
+                balanced = False
+            else:
+                top = s.pop()
+                if top[2:] not in tags[1:]:
+                    balanced = False
+   
+    if balanced and s == []:
+        return True
+    else:
+        return False 
+    
     # HINT:
     # use the _extract_tags function below to generate a list of html tags without any extra text;
     # then process these html tags using the balanced parentheses algorithm from the book
@@ -29,3 +47,18 @@ def _extract_tags(html):
     >>> _extract_tags('Python <strong>rocks</strong>!')
     ['<strong>', '</strong>']
     '''
+    
+    s=[]
+    for index in range(len(html)):
+        temp = ''
+        tags = html[index]
+
+        if tags == '<' :
+            while tags != '>':
+                temp += tags
+                index = index+1
+                tags = html[index]
+            temp += '>'
+            s.append(temp)
+    return s
+
